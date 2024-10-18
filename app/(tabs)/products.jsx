@@ -4,7 +4,7 @@ export default function TabProduct(){
 
     return (
         <View>
-            <Text>Productos</Text>
+            <Text>Productos: lalalalal</Text>
         </View>
     )
 }

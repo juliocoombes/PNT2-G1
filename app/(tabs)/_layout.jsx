@@ -31,6 +31,26 @@ export default function TabLayout(){
                     )
                 }}
             />
+
+            <Tabs.Screen
+            name="leaderboard"
+            options={{
+                title: "Leaderboards",
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons size={28} name={focused ? 'trophy' : 'trophy-outline'} color={color} />
+                )
+            }}
+        />
+            <Tabs.Screen
+            name="game"
+            options={{
+                title: "Juego",
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons size={28} name={focused ? 'game-controller' : 'game-controller-outline'} color={color} />
+                )
+            }}
+        />
+
         </Tabs>
     )
 }

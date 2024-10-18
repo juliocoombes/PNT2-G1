@@ -9,7 +9,7 @@ export default function Login() {
   const [email, setEmail ] = useState('');
   const [password, setPassword ] = useState('');
 
-  const router = useRouter()
+  const router = useRouter();
 
 
   const handleLogin = async () => {
@@ -23,7 +23,14 @@ export default function Login() {
 
       if(user){
         alert('Login Conseguido')
-        router.push('/(tabs)')
+
+          if (usuario === "admin") {
+            router.push('/crear-preguntas');
+
+          }else {
+            router.push('/(tabs)'); // Redirige a la pantalla principal
+        }
+
       }else{
         alert('Login Fallido')
       }
@@ -71,7 +78,7 @@ export default function Login() {
         if(response.ok){
           alert('Registro Exitoso')
           const nuevoUsuario = response.json()
-          router.push('/(tabs)')
+          router.push('/(tabs)') // Redirige a la pantalla principal.
         }else{
           alert('Error al registrar el usuario')
         }
