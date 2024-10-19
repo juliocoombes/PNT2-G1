@@ -4,7 +4,10 @@ import { useRouter } from 'expo-router';
 
 export default function Login() {
 
-  const [esLogin, setEsLogin] = useState(false)
+  //Aca se maneja el login, registro de usuarios, de preguntas etc etc.. junto con la logica correspondiente.
+  //Seria como el home de la app por que es lo primero que se ve cuando se corre.
+
+  const [esLogin, setEsLogin] = useState(true)
   const [usuario, setUsuario ] = useState('');
   const [email, setEmail ] = useState('');
   const [password, setPassword ] = useState('');
@@ -16,7 +19,7 @@ export default function Login() {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
     try {
-      const response = await fetch('https://66fc865cc3a184a84d173c40.mockapi.io/api/v1/usuarios');
+      const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios');
       const data = await response.json()
       
       const user = data.find( u => u.usuario === usuario && u.password === password );
@@ -25,10 +28,10 @@ export default function Login() {
         alert('Login Conseguido')
 
           if (usuario === "admin") {
-            router.push('/crear-preguntas');
+            router.push('/crearPreguntasAdmin'); //Redirige a la pantalla de crear preguntas
 
           }else {
-            router.push('/(tabs)'); // Redirige a la pantalla principal
+            router.push('/juego'); // Redirige a la pantalla principal
         }
 
       }else{
@@ -44,7 +47,7 @@ export default function Login() {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
     try {
-      const response = await fetch('https://66fc865cc3a184a84d173c40.mockapi.io/api/v1/usuarios');
+      const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios'); //api propia de mockapi. la misma en las otras peticiones.
       const data = await response.json()
       
       const userExist = data.some( u => u.usuario === usuario);
@@ -67,7 +70,7 @@ export default function Login() {
         })
 
 
-        const response = await fetch('https://66fc865cc3a184a84d173c40.mockapi.io/api/v1/usuarios', {
+        const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios', {
           method: 'POST',
           headers:{
             'Content-Type':'application/json'

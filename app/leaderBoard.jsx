@@ -1,37 +1,21 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
+// app/Leaderboard.jsx
+import { View, Text, StyleSheet } from 'react-native';
+import { useSearchParams } from 'expo-router';
 
-export default function LeaderboardScreen() {
-    const [leaderboard, setLeaderboard] = useState([]);
-
-    useEffect(() => {
-        const fetchLeaderboard = async () => {
-            // Recupera los datos de la API
-            const response = await fetch('https://api.example.com/leaderboard'); //Crear una api para esto
-            const data = await response.json();
-            setLeaderboard(data);
-        };
-        fetchLeaderboard();
-    }, []);
+export default function Leaderboard() {
+    const { puntaje } = useSearchParams(); // Asegúrate de que 'puntaje' esté aquí
+    console.log("Puntaje recibido:", puntaje); // Verifica que se está recibiendo el puntaje
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Tabla de Líderes</Text>
-            <FlatList
-                data={leaderboard}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.item}>
-                        <Text>{item.username}: {item.score}</Text>
-                    </View>
-                )}
-            />
+            <Text style={styles.puntaje}>Tu puntaje: {puntaje}</Text>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 },
-    title: { fontSize: 24, marginBottom: 20 },
-    item: { padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' },
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1F1F1F' },
+    title: { fontSize: 24, marginBottom: 20, color: '#FFFFFF' },
+    puntaje: { fontSize: 18, color: '#FFFFFF' },
 });
