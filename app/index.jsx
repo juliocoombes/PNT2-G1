@@ -33,7 +33,7 @@ export default function Login() {
           }else {
             router.push('/juego'); // Redirige a la pantalla principal
         }
-
+        
       }else{
         alert('Login Fallido')
       }

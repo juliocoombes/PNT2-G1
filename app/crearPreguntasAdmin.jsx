@@ -1,91 +1,89 @@
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+// app/CrearPreguntasAdmin.jsx
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useState } from 'react';
 
-export default function CrearPreguntas() {
+export default function CrearPreguntasAdmin() {
     const [pregunta, setPregunta] = useState('');
     const [respuesta, setRespuesta] = useState('');
 
-    const apiPreguntas = 'https://6705358c031fd46a830f15c0.mockapi.io/api/v1/Preguntas';
+    const apiCrearPregunta = 'https://6705358c031fd46a830f15c0.mockapi.io/api/v1/Preguntas';
 
-    const handleSubmit = async () => {
-        console.log('Pregunta:', pregunta);
-        console.log('Respuesta:', respuesta);
+    const crearPregunta = async () => {
+        if (!pregunta || !respuesta) {
+            Alert.alert('Error', 'Por favor, completa todos los campos.');
+            return;
+        }
+
+        const nuevaPregunta = {
+            pregunta,
+            respuesta,
+        };
 
         try {
-            const body = JSON.stringify({
-                pregunta: pregunta,
-                respuesta: respuesta,
-            });
-
-            const response = await fetch(apiPreguntas, { // Fixed the variable name from apiUrl to apiPreguntas
+            const response = await fetch(apiCrearPregunta, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: body,
+                body: JSON.stringify(nuevaPregunta),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Pregunta creada:', data);
-                alert('Pregunta creada exitosamente');
-                setPregunta('');
-                setRespuesta('');
-            } else {
-                alert('Error al crear la pregunta');
+            if (!response.ok) {
+                throw new Error('Error al crear la pregunta');
             }
+
+            setPregunta('');
+            setRespuesta('');
+            Alert.alert('Éxito', 'Pregunta creada correctamente.');
         } catch (error) {
-            console.error('Error en la solicitud:', error);
-            alert('Error en la conexión');
+            Alert.alert('Error', 'No se pudo crear la pregunta. Intenta de nuevo.');
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Crear Pregunta</Text>
+            <Text style={styles.title}>Crear Nueva Pregunta</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Ingrese la pregunta"
-                placeholderTextColor="#B0B0B0"
+                placeholder="Escribe la pregunta"
                 value={pregunta}
                 onChangeText={setPregunta}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Ingrese la respuesta"
-                placeholderTextColor="#B0B0B0"
+                placeholder="Escribe la respuesta"
                 value={respuesta}
                 onChangeText={setRespuesta}
             />
-            <Button title="Crear Pregunta" onPress={handleSubmit} color="#4CAF50" />
+            <Button title="Crear Pregunta" onPress={crearPregunta} />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#1F1F1F',
-        justifyContent: 'center',
-        alignItems: 'center',
+    container: { 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: '#2C2C2C', // Fondo oscuro
+        padding: 20 
     },
-    title: {
-        fontSize: 28,
-        marginBottom: 20,
-        textAlign: 'center',
-        color: '#FFFFFF',
-        fontWeight: 'bold',
+    title: { 
+        fontSize: 28, 
+        marginBottom: 20, 
+        color: '#EAEAEA', // Color claro para el título
+        fontWeight: 'bold' 
     },
     input: {
         height: 50,
-        width: '100%',
-        borderColor: '#555555',
+        borderColor: 'white', // Color gris para el borde
         borderWidth: 1,
+        borderRadius: 8,
         marginBottom: 20,
+        width: '100%',
         paddingHorizontal: 15,
-        borderRadius: 10,
-        backgroundColor: '#2E2E2E',
-        color: '#FFFFFF',
+        fontSize: 16,
+        backgroundColor: '#444444', // Fondo de los inputs en gris oscuro
+        color: '#EAEAEA', // Color claro para el texto
     },
 });
