@@ -58,6 +58,8 @@ export default function GameScreen() {
             }
         }
     };
+    
+    
 
     return (
         <View style={styles.container}>
