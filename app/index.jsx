@@ -2,6 +2,7 @@ import { Image, StyleSheet, Platform, View, Text, TextInput, Button, Switch } fr
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 
+
 export default function Login() {
 
   //Aca se maneja el login, registro de usuarios, de preguntas etc etc.. junto con la logica correspondiente.
@@ -14,28 +15,27 @@ export default function Login() {
 
   const router = useRouter();
 
-
   const handleLogin = async () => {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
     try {
-      const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios');
+      const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
       const data = await response.json()
       
-      const user = data.find( u => u.usuario === usuario && u.password === password );
+      //asigno a la constante user los datos del usuario
+      const user = data.find(u => (u.username == usuario || u.email == usuario) && u.password == password);
 
       if(user){
         alert('Login Conseguido')
 
-          if (usuario === "admin") {
+          if (user.user_categoria == "admin") {
             router.push('/crearPreguntasAdmin'); //Redirige a la pantalla de crear preguntas
-
-          }else {
+          } else {
             router.push('/juego'); // Redirige a la pantalla principal
         }
         
-      }else{
-        alert('Login Fallido')
+      } else {
+        alert('Credenciales incorrectas, por favor intente de nuevo.');
       }
     } catch (error) {
       console.error(error)
@@ -47,30 +47,26 @@ export default function Login() {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
     try {
-      const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios'); //api propia de mockapi. la misma en las otras peticiones.
+      const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios'); //api propia de mockapi. la misma en las otras peticiones.
       const data = await response.json()
       
-      const userExist = data.some( u => u.usuario === usuario);
+      const userExist = data.some( u => u.username === usuario);
       const emailExist = data.some( u => u.email === email);
 
       if(userExist){
-        alert('Usuario ya registrado')
+        alert('El username ya está en uso.')
       }
       else if(emailExist){
-        alert('Email ya registrado')
+        alert('El Email ya está registrado.')
       }
       else{
-
-
         const body = JSON.stringify({
-          usuario: usuario,
+          username: usuario,
           email: email,
-          password: password,
-          avatar: 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+          password: password
         })
 
-
-        const response = await fetch('https://6705358c031fd46a830f15c0.mockapi.io/api/v1/usuarios', {
+        const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
           method: 'POST',
           headers:{
             'Content-Type':'application/json'

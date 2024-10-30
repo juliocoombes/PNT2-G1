@@ -1,65 +1,78 @@
 // app/GameScreen.jsx
-import { View, Text, Button, StyleSheet, Alert, TextInput } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 
 export default function GameScreen() {
     const router = useRouter();
-    const [preguntas, setPreguntas] = useState([]);
-    const [indicePregunta, setIndicePregunta] = useState(0);
-    const [puntos, setPuntos] = useState(0);
-    const [respuestaUsuario, setRespuestaUsuario] = useState('');
+    const [preguntas, setPreguntas] = useState([]); //Donde me guardo el array de preguntas
+    const [indicePregunta, setIndicePregunta] = useState(0); //Donde me guardo el valor que uso para seguir preugntando, esto al llegar al maximo de preguntas se usa para redirigir al leaderboard
+    const [puntos, setPuntos] = useState(0); //Donde me guardo los puntos que voy acumulando, por fdefecto se inicia en 0
+    const [respuestaCorrecta, setRespuestaCorrecta] = useState(''); //donde me guardo el flag de la respuesta correcta
 
-    const apiPreguntas = 'https://6705358c031fd46a830f15c0.mockapi.io/api/v1/Preguntas';
+    //Me guardo en esta constante el array de todas las preguntas
+    const apiPreguntas = 'https://67184566b910c6a6e02b8291.mockapi.io/preguntas/Preguntas';
 
     useEffect(() => {
-        // Fetch questions from API
         const fetchPreguntas = async () => {
             try {
+                //Aqui hago el fectch a la api y espero la respuesta
                 const response = await fetch(apiPreguntas);
                 const data = await response.json();
-                setPreguntas(data);
+                // el metodo random para que no pregunte de forma lineal si no que al azar las preguntas.
+                const preguntasAleatorias = data.sort(() => Math.random() - 0.5);
+                //y me guardo en el setPreguntas para iterarlo luego
+                setPreguntas(preguntasAleatorias);
             } catch (error) {
-                console.error('Error fetching questions:', error);
+                console.error('error en el fetch para buscar las preguntas en al api', error);
             }
         };
+
+        //llamo al metodo
         fetchPreguntas();
+
     }, []);
 
-    const responderPregunta = () => {
-        if (indicePregunta < preguntas.length) {
-            const preguntaActual = preguntas[indicePregunta];
+    const manejarRespuesta = (respuestaSeleccionada) => {
+        const preguntaActual = preguntas[indicePregunta];
 
-            // Verifica la respuesta del usuario
-            if (respuestaUsuario.trim().toLowerCase() === preguntaActual.respuesta.toLowerCase()) {
-                setPuntos(prevPuntos => prevPuntos + 1); // Sumar puntos solo si la respuesta es correcta
-            }
+        // if para verificar si la respuesta es true o false
+        if (respuestaSeleccionada.es_correcta) {
+            //Si es true sumo un punto
+            setPuntos(prevPuntos => prevPuntos + 1);
+            setRespuestaCorrecta('Correcto!');
+        } else {
+            setRespuestaCorrecta('Incorrecto. La respuesta correcta es: ' + preguntaActual.respuestas.find(r => r.es_correcta).opcion);
+        }
 
-            setRespuestaUsuario(''); // Reiniciar input
-            setIndicePregunta(indicePregunta + 1); // Pasar a la siguiente pregunta
-
-            // Si es la última pregunta, finalizar el juego
-            if (indicePregunta === preguntas.length - 1) {
-                const finalPuntos = puntos + (respuestaUsuario.trim().toLowerCase() === preguntaActual.respuesta.toLowerCase() ? 1 : 0);
-                // Navegar a la pantalla de leaderboard
-                router.push(`/leaderBoard?puntaje=${finalPuntos}`);
-                
+        // esto para evitar un missclick del usuario.
+        if (window.confirm(`${respuestaCorrecta} ¿Desea continuar?`)) {
+            //Aqui es donde se hace la iteracion de las preguntas, mientras que hayan preguntas seguirá preguntando
+            if (indicePregunta < preguntas.length - 1) {
+                //lo manejo con un +1 porque toma la posicion logica, o sea 0, 1, 2 o 3 entonces a todo el resultado tengo que sumarle 1 para mejor visualizacion por parte del usuario.
+                setIndicePregunta(indicePregunta + 1);
+                setRespuestaCorrecta('');
+            } else {
+                // si ya no hay mas preguntas lleva a la ventana de leaderboards
+                router.push(`/leaderBoard?puntaje=${puntos + (respuestaSeleccionada.es_correcta ? 1 : 0)}`);
             }
         }
     };
 
     return (
         <View style={styles.container}>
-            {indicePregunta < preguntas.length ? (
+            {preguntas.length > 0 && indicePregunta < preguntas.length ? (
                 <>
                     <Text style={styles.pregunta}>{preguntas[indicePregunta]?.pregunta}</Text>
-                    <Text style={styles.puntos}>Puntos: {puntos}</Text> {/* Mostrar el puntaje actual */}
-                    <TextInput
-                        style={styles.input}
-                        value={respuestaUsuario}
-                        onChangeText={setRespuestaUsuario}
-                    />
-                    <Button title="Responder" onPress={responderPregunta} />
+                    <Text style={styles.puntos}>Puntos: {puntos}</Text>
+                    {preguntas[indicePregunta]?.respuestas.map((respuesta) => (
+                        <View key={respuesta.id_opcion} style={styles.buttonContainer}>
+                            <Button
+                                title={respuesta.opcion}
+                                onPress={() => manejarRespuesta(respuesta)}
+                            />
+                        </View>
+                    ))}
                 </>
             ) : (
                 <Text style={styles.finalizado}>¡Juego terminado!</Text>
@@ -71,7 +84,7 @@ export default function GameScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1F1F1F' },
     pregunta: { fontSize: 20, color: '#FFFFFF' },
-    puntos: { fontSize: 24, color: '#FFFFFF', marginVertical: 20 }, // Estilo para el puntaje
-    input: { borderWidth: 1, borderColor: '#FFFFFF', marginVertical: 20, padding: 10, width: '80%', color: '#FFFFFF' },
+    puntos: { fontSize: 24, color: '#FFFFFF', marginVertical: 20 },
     finalizado: { fontSize: 24, color: '#FFFFFF' },
+    buttonContainer: { marginBottom: 10, width: '80%' },
 });
