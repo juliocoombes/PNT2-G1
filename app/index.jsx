@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Platform, View, Text, TextInput, Button, Switch } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
-
+import { useUser } from './UserContext';
 
 export default function Login() {
 
@@ -9,10 +9,11 @@ export default function Login() {
   //Seria como el home de la app por que es lo primero que se ve cuando se corre.
 
   const [esLogin, setEsLogin] = useState(true)
-  const [usuario, setUsuario ] = useState('');
-  const [email, setEmail ] = useState('');
-  const [password, setPassword ] = useState('');
+  const [usuario, setUsuario] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
+  const { setUser } = useUser();
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -20,28 +21,22 @@ export default function Login() {
     console.log('Password: ', password);
     try {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
-      const data = await response.json()
-      
-      //asigno a la constante user los datos del usuario
+      const data = await response.json();
+
       const user = data.find(u => (u.username == usuario || u.email == usuario) && u.password == password);
 
-      if(user){
-        alert('Login Conseguido')
-
-          if (user.user_categoria == "admin") {
-            router.push('/crearPreguntasAdmin'); //Redirige a la pantalla de crear preguntas
-          } else {
-            router.push('/juego'); // Redirige a la pantalla principal
-        }
-        
+      if (user) {
+        setUser(user);
+        alert('Login Conseguido');
+        router.push('/menu');
       } else {
         alert('Credenciales incorrectas, por favor intente de nuevo.');
       }
     } catch (error) {
-      console.error(error)
-      alert('Error en la autenticacion')
+      console.error(error);
+      alert('Error en la autenticacion');
     }
-  }
+  };
 
   const handleRegister = async () => {
     console.log('Usuario: ', usuario);
@@ -49,17 +44,17 @@ export default function Login() {
     try {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios'); //api propia de mockapi. la misma en las otras peticiones.
       const data = await response.json()
-      
-      const userExist = data.some( u => u.username === usuario);
-      const emailExist = data.some( u => u.email === email);
 
-      if(userExist){
+      const userExist = data.some(u => u.username === usuario);
+      const emailExist = data.some(u => u.email === email);
+
+      if (userExist) {
         alert('El username ya está en uso.')
       }
-      else if(emailExist){
+      else if (emailExist) {
         alert('El Email ya está registrado.')
       }
-      else{
+      else {
         const body = JSON.stringify({
           username: usuario,
           email: email,
@@ -68,17 +63,17 @@ export default function Login() {
 
         const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
           method: 'POST',
-          headers:{
-            'Content-Type':'application/json'
+          headers: {
+            'Content-Type': 'application/json'
           },
           body: body
         });
 
-        if(response.ok){
+        if (response.ok) {
           alert('Registro Exitoso')
           const nuevoUsuario = response.json()
           router.push('/(tabs)') // Redirige a la pantalla principal.
-        }else{
+        } else {
           alert('Error al registrar el usuario')
         }
       }
@@ -93,48 +88,48 @@ export default function Login() {
     <View style={styles.container}>
       <Text style={styles.title}>{esLogin ? 'Login' : 'Register'}</Text>
       <Text>Usuario:</Text>
-      <TextInput 
-        style={ styles.input} 
+      <TextInput
+        style={styles.input}
         placeholder='Ingrese su Usuario'
         value={usuario}
         onChangeText={setUsuario}
-        />
+      />
       {
         !esLogin && (
           <>
-          <Text>Email:</Text>
-          <TextInput 
-            style={ styles.input} 
-            placeholder='Ingrese su Email'
-            value={email}
-            onChangeText={setEmail}
+            <Text>Email:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='Ingrese su Email'
+              value={email}
+              onChangeText={setEmail}
             />
           </>
         )
       }
       <Text>Password:</Text>
-      <TextInput 
-        secureTextEntry={true}  
-        style={ styles.input} 
+      <TextInput
+        secureTextEntry={true}
+        style={styles.input}
         placeholder='Ingrese su password'
         value={password}
         onChangeText={setPassword}
-        />
+      />
       <View style={styles.register}>
-      {
-        esLogin ?
-        (
-          <Button title={'Iniciar Sesion'} onPress={handleLogin} />
-        )
-        :
-        (
-          <Button title={'Registrate'} onPress={handleRegister} />
-        )
-      }
+        {
+          esLogin ?
+            (
+              <Button title={'Iniciar Sesion'} onPress={handleLogin} />
+            )
+            :
+            (
+              <Button title={'Registrate'} onPress={handleRegister} />
+            )
+        }
       </View>
       <View>
         <Text>{esLogin ? "Cambia a Registro" : 'Cambia a Login'}</Text>
-        <Switch value={esLogin} onValueChange={setEsLogin}/>
+        <Switch value={esLogin} onValueChange={setEsLogin} />
       </View>
     </View>
   );
@@ -142,12 +137,12 @@ export default function Login() {
 
 const styles = StyleSheet.create({
 
-  container:{
+  container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
   },
-  input:{
+  input: {
     height: 40,
     borderColor: 'grey',
     borderWidth: 1,
@@ -155,12 +150,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10
   },
-  title:{
+  title: {
     fontSize: 24,
     marginBottom: 20,
     textAlign: 'center'
-  },  
-  register:{
+  },
+  register: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 20,
