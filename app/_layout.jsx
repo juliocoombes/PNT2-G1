@@ -11,8 +11,11 @@ export default function RootLayout() {
                 <Stack.Screen name="index" options={{ headerShown: false }} />
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="juego" options={{ headerShown: false }} />
-                <Stack.Screen name="crear preguntas" options={{ headerShown: false }} />
-                <Stack.Screen name="tabla de puntos" options={{ headerShown: false }} />
+                <Stack.Screen name="menu" options={{ headerShown: false }} />
+                <Stack.Screen name="estadisticas" options={{ headerShown: false }} />
+                <Stack.Screen name="perfil" options={{ headerShown: false }} />
+                <Stack.Screen name="crearpreguntasAdmin" options={{ headerShown: false }} />
+                <Stack.Screen name="leaderBoard" options={{ headerShown: false }} />
             </Stack>
         </UserProvider>
     );

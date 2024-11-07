@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, View, Text, TextInput, Button, Switch } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Switch, Alert } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useUser } from './UserContext';
@@ -27,14 +27,14 @@ export default function Login() {
 
       if (user) {
         setUser(user);
-        alert('Login Conseguido');
+        Alert.alert('Login Conseguido');
         router.push('/menu');
       } else {
-        alert('Credenciales incorrectas, por favor intente de nuevo.');
+        Alert.alert('Credenciales incorrectas, por favor intente de nuevo.');
       }
     } catch (error) {
       console.error(error);
-      alert('Error en la autenticacion');
+      Alert.alert('Error en la autenticacion');
     }
   };
 
@@ -49,10 +49,10 @@ export default function Login() {
       const emailExist = data.some(u => u.email === email);
 
       if (userExist) {
-        alert('El username ya está en uso.')
+        Alert.alert('El username ya está en uso.')
       }
       else if (emailExist) {
-        alert('El Email ya está registrado.')
+        Alert.alert('El Email ya está registrado.')
       }
       else {
         const body = JSON.stringify({
@@ -70,16 +70,16 @@ export default function Login() {
         });
 
         if (response.ok) {
-          alert('Registro Exitoso')
+          Alert.alert('Registro Exitoso')
           const nuevoUsuario = response.json()
           router.push('/(tabs)') // Redirige a la pantalla principal.
         } else {
-          alert('Error al registrar el usuario')
+          Alert.alert('Error al registrar el usuario')
         }
       }
     } catch (error) {
       console.error(error)
-      alert('Error en la autenticacion')
+      Alert.alert('Error en la autenticacion')
     }
   }
 

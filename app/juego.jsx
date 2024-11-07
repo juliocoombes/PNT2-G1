@@ -1,65 +1,106 @@
-// app/GameScreen.jsx
-import { View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useUser } from './UserContext';
 
 export default function GameScreen() {
+    const { user, setUser } = useUser();
     const router = useRouter();
-    const [preguntas, setPreguntas] = useState([]); //Donde me guardo el array de preguntas
-    const [indicePregunta, setIndicePregunta] = useState(0); //Donde me guardo el valor que uso para seguir preugntando, esto al llegar al maximo de preguntas se usa para redirigir al leaderboard
-    const [puntos, setPuntos] = useState(0); //Donde me guardo los puntos que voy acumulando, por fdefecto se inicia en 0
-    const [respuestaCorrecta, setRespuestaCorrecta] = useState(''); //donde me guardo el flag de la respuesta correcta
+    const [preguntas, setPreguntas] = useState([]);
+    const [indicePregunta, setIndicePregunta] = useState(0);
+    const [puntos, setPuntos] = useState(0);
+    const [respuestaCorrecta, setRespuestaCorrecta] = useState('');
 
-    //Me guardo en esta constante el array de todas las preguntas
     const apiPreguntas = 'https://67184566b910c6a6e02b8291.mockapi.io/preguntas/Preguntas';
 
     useEffect(() => {
         const fetchPreguntas = async () => {
             try {
-                //Aqui hago el fectch a la api y espero la respuesta
                 const response = await fetch(apiPreguntas);
                 const data = await response.json();
-                // el metodo random para que no pregunte de forma lineal si no que al azar las preguntas.
                 const preguntasAleatorias = data.sort(() => Math.random() - 0.5);
-                //y me guardo en el setPreguntas para iterarlo luego
                 setPreguntas(preguntasAleatorias);
             } catch (error) {
-                console.error('error en el fetch para buscar las preguntas en al api', error);
+                console.error('Error al obtener preguntas:', error);
             }
         };
-
-        //llamo al metodo
         fetchPreguntas();
-
     }, []);
 
-    const manejarRespuesta = (respuestaSeleccionada) => {
-        const preguntaActual = preguntas[indicePregunta];
+    const actualizarPuntajeMax = async (nuevoMaxPuntaje) => {
+        try {
+            const response = await fetch(`https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    max_puntaje: nuevoMaxPuntaje,
+                }),
+            });
 
-        // if para verificar si la respuesta es true o false
-        if (respuestaSeleccionada.es_correcta) {
-            //Si es true sumo un punto
-            setPuntos(prevPuntos => prevPuntos + 1);
-            setRespuestaCorrecta('Correcto!');
-        } else {
-            setRespuestaCorrecta('Incorrecto. La respuesta correcta es: ' + preguntaActual.respuestas.find(r => r.es_correcta).opcion);
-        }
-
-        // esto para evitar un missclick del usuario.
-        if (window.confirm(`${respuestaCorrecta} ¿Desea continuar?`)) {
-            //Aqui es donde se hace la iteracion de las preguntas, mientras que hayan preguntas seguirá preguntando
-            if (indicePregunta < preguntas.length - 1) {
-                //lo manejo con un +1 porque toma la posicion logica, o sea 0, 1, 2 o 3 entonces a todo el resultado tengo que sumarle 1 para mejor visualizacion por parte del usuario.
-                setIndicePregunta(indicePregunta + 1);
-                setRespuestaCorrecta('');
-            } else {
-                // si ya no hay mas preguntas lleva a la ventana de leaderboards
-                router.push(`/leaderBoard?puntaje=${puntos + (respuestaSeleccionada.es_correcta ? 1 : 0)}`);
-            }
+            const data = await response.json();
+            setUser(data);
+            console.log("max_puntaje actualizado correctamente:", data);
+        } catch (error) {
+            console.error("Error al actualizar max_puntaje:", error);
         }
     };
-    
-    
+
+    const confirmarCancelacion = () => {
+        Alert.alert(
+            'Cancelar Juego',
+            'Se cancelará el juego, ¿desea continuar?',
+            [
+                { text: 'No', style: 'cancel' },
+                { text: 'Sí', onPress: () => router.push('/menu') },
+            ],
+            { cancelable: true }
+        );
+    };
+    const manejarRespuesta = (respuestaSeleccionada) => {
+        const preguntaActual = preguntas[indicePregunta];
+        const esCorrecta = respuestaSeleccionada.es_correcta;
+
+        const mensajeRespuesta = esCorrecta
+            ? 'Correcto!'
+            : 'Incorrecto. La respuesta correcta es: ' +
+            preguntaActual.respuestas.find((r) => r.es_correcta).opcion;
+
+        Alert.alert(
+            mensajeRespuesta,
+            '¿Desea continuar?',
+            [
+                {
+                    text: 'No',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Sí',
+                    onPress: () => {
+                        if (esCorrecta) {
+                            setPuntos((prevPuntos) => prevPuntos + 1);
+                        }
+
+                        if (indicePregunta < preguntas.length - 1) {
+                            setIndicePregunta(indicePregunta + 1);
+                        } else {
+                            const puntajeFinal = puntos + (esCorrecta ? 1 : 0);
+                            if (puntajeFinal > user.max_puntaje) {
+                                actualizarPuntajeMax(puntajeFinal);
+                            }
+                            router.push(`/leaderBoard`);
+                        }
+
+                        setRespuestaCorrecta('');
+                    },
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
 
     return (
         <View style={styles.container}>
@@ -67,18 +108,26 @@ export default function GameScreen() {
                 <>
                     <Text style={styles.pregunta}>{preguntas[indicePregunta]?.pregunta}</Text>
                     <Text style={styles.puntos}>Puntos: {puntos}</Text>
-                    {preguntas[indicePregunta]?.respuestas.map((respuesta) => (
-                        <View key={respuesta.id_opcion} style={styles.buttonContainer}>
-                            <Button
-                                title={respuesta.opcion}
-                                onPress={() => manejarRespuesta(respuesta)}
-                            />
-                        </View>
-                    ))}
+                    {preguntas[indicePregunta]?.respuestas
+                        .sort(() => Math.random() - 0.5)
+                        .map((respuesta) => (
+                            <View key={respuesta.id_opcion} style={styles.buttonContainer}>
+                                <Button
+                                    title={respuesta.opcion}
+                                    onPress={() => manejarRespuesta(respuesta)}
+                                />
+                            </View>
+                        ))}
                 </>
             ) : (
                 <Text style={styles.finalizado}>¡Juego terminado!</Text>
             )}
+            <View style={styles.containerMenu}>
+                <TouchableOpacity style={styles.botonIrAlMenu} onPress={confirmarCancelacion}>
+                    <Icon name="times-circle-o" size={35} color="red" style={styles.icon} />
+                    <Text style={styles.menuText}>Cancelar juego</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -89,4 +138,20 @@ const styles = StyleSheet.create({
     puntos: { fontSize: 24, color: '#FFFFFF', marginVertical: 20 },
     finalizado: { fontSize: 24, color: '#FFFFFF' },
     buttonContainer: { marginBottom: 10, width: '80%' },
+    containerMenu: { marginTop: 25, width: '50%' },
+    icon: { marginRight: 10 },
+    menuText: { fontSize: 18, color: '#FFF', fontWeight: 'bold' },
+    botonIrAlMenu: {
+        backgroundColor: '#333',
+        padding: 10,
+        borderRadius: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,
+    },
 });
