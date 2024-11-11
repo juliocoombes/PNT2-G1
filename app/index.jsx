@@ -72,7 +72,13 @@ export default function Login() {
         if (response.ok) {
           Alert.alert('Registro Exitoso')
           const nuevoUsuario = response.json()
-          router.push('/(tabs)') // Redirige a la pantalla principal.
+          const loggedUser = {
+            id: nuevoUsuario.id,
+            username: nuevoUsuario.usename,
+            email : nuevoUsuario.email
+          }
+          setUser(loggedUser)
+          router.push('/menu') // Redirige a la pantalla principal.
         } else {
           Alert.alert('Error al registrar el usuario')
         }
