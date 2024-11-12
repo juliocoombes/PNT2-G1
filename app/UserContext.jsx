@@ -7,6 +7,7 @@ export const UserProvider = ({ children }) => {
 
     const logout = () => {
         setUser(null);
+        router.push('/');
     };
 
     return (
