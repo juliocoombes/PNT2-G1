@@ -8,10 +8,10 @@ export default function Menu() {
     const router = useRouter();
     const { user, logout } = useUser();
 
-    const handleLogout = () => {
-        logout();
-        router.push('/');
-    };
+    // const handleLogout = () => {
+    //     logout();
+    //     router.push('/');
+    // };
 
     return (
         <View style={styles.container}>
@@ -47,8 +47,9 @@ export default function Menu() {
                 </View>
             )}
 
+
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => router.push('/')}>  
                     <Icon name="sign-out" size={25} color="white" style={styles.icon} />
                     <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
                 </TouchableOpacity>
@@ -56,6 +57,8 @@ export default function Menu() {
         </View>
     );
 }
+
+// onPress={handleLogout}> asi estaba antes el logOut.. pero no funcionaba
 
 const styles = StyleSheet.create({
     container: {
