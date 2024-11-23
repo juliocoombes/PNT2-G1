@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useUser } from './UserContext';
 
+// Función auxiliar para validar el formato de email
+
+
 export default function Login() {
 
   //Aca se maneja el login, registro de usuarios, de preguntas etc etc.. junto con la logica correspondiente.
@@ -16,6 +19,15 @@ export default function Login() {
   const { setUser } = useUser();
   const router = useRouter();
 
+
+  const esEmailValido = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+
+
+  //Funciona bien
   const handleLogin = async () => {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
@@ -38,56 +50,65 @@ export default function Login() {
     }
   };
 
+  //Funciona bien
   const handleRegister = async () => {
     console.log('Usuario: ', usuario);
     console.log('Password: ', password);
+    console.log('Mail: ', email);
+  
     try {
-      const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios'); //api propia de mockapi. la misma en las otras peticiones.
-      const data = await response.json()
-
-      const userExist = data.some(u => u.username === usuario);
-      const emailExist = data.some(u => u.email === email);
-
-      if (userExist) {
-        Alert.alert('El username ya está en uso.')
-      }
-      else if (emailExist) {
-        Alert.alert('El Email ya está registrado.')
-      }
-      else {
-        const body = JSON.stringify({
-          username: usuario,
-          email: email,
-          password: password
-        })
-
-        const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: body
-        });
-
-        if (response.ok) {
-          Alert.alert('Registro Exitoso')
-          const nuevoUsuario = response.json()
-          const loggedUser = {
-            id: nuevoUsuario.id,
-            username: nuevoUsuario.usename,
-            email : nuevoUsuario.email
+      if (usuario && password && email && esEmailValido(email)) {
+        const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
+        const data = await response.json();
+  
+        const userExist = data.some(u => u.username === usuario);
+        const emailExist = data.some(u => u.email === email);
+  
+        if (!userExist && !emailExist) {
+          const body = JSON.stringify({
+            username: usuario,
+            email: email,
+            password: password,
+          });
+  
+          const createResponse = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: body,
+          });
+  
+          if (createResponse.ok) {
+            Alert.alert('Registro Exitoso');
+            const nuevoUsuario = await createResponse.json();
+            const loggedUser = {
+              id: nuevoUsuario.id,
+              username: nuevoUsuario.username,
+              email: nuevoUsuario.email,
+            };
+            setUser(loggedUser);
+            router.push('/menu');
+          } else {
+            Alert.alert('Error al registrar el usuario.');
           }
-          setUser(loggedUser)
-          router.push('/menu') // Redirige a la pantalla principal.
         } else {
-          Alert.alert('Error al registrar el usuario')
+          Alert.alert(userExist ? 'El username ya está en uso.' : 'El Email ya está registrado.');
         }
+      } else {
+        Alert.alert(
+          !usuario || !password || !email
+            ? 'Por favor, complete todos los campos.'
+            : 'Por favor, ingresa un email válido.'
+        );
       }
     } catch (error) {
-      console.error(error)
-      Alert.alert('Error en la autenticacion')
+      console.error(error);
+      Alert.alert('Error en la autenticación.');
     }
-  }
+  };
+  
+
 
 
   return (

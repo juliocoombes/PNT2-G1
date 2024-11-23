@@ -4,6 +4,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useUser } from './UserContext';
 
+ //ahora si funciona el cerrar sesion. Como estaba con el handlelogut no funciona y se crashea.
+
+ // onPress={handleLogout}> asi estaba antes el logOut.. pero no funcionaba
+
+// asi si funciona --> onPress={() => router.push('/')}>
+
 export default function Menu() {
     const router = useRouter();
     const { user, logout } = useUser();
@@ -58,7 +64,6 @@ export default function Menu() {
     );
 }
 
-// onPress={handleLogout}> asi estaba antes el logOut.. pero no funcionaba
 
 const styles = StyleSheet.create({
     container: {
