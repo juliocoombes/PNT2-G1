@@ -19,7 +19,7 @@ export default function Login() {
   const { setUser } = useUser();
   const router = useRouter();
 
-
+//Para validar que no me manden algo que no sea un mail
   const esEmailValido = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);

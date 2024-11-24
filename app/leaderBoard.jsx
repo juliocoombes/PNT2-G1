@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -44,6 +44,9 @@ export default function Leaderboard() {
                     contentContainerStyle={styles.listContainer}
                 />
             )}
+             <TouchableOpacity style={styles.button} onPress={() => router.push('/menu')}>
+                <Text style={styles.buttonText}>Volver al Menú</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -104,4 +107,28 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         textAlign: 'right',
     },
+
+
+    button: {
+        marginTop: 20,
+        backgroundColor: '#FFD700',  // Color dorado
+        paddingVertical: 12,
+        paddingHorizontal: 25,
+        borderRadius: 25, // Borde redondeado
+        alignItems: 'center', // Centra el texto
+        justifyContent: 'center',
+        width: '70%', // Ancho del botón
+        marginBottom: 20, // Espacio debajo
+        elevation: 5, // Sombra ligera para Android
+    },
+
+
+    buttonText: {
+        fontSize: 18,
+        color: '#1F1F1F', // Texto oscuro
+        fontWeight: 'bold', // Texto en negrita
+        textAlign: 'center', // Centrado
+    },
+
+
 });

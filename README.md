@@ -3,7 +3,7 @@
 
 2) Pensar si esta bien que el usuario se admin o no por defecto ya que no lo validamos en ningun lado, es un atributo que asignamos desde la api y no se que tan bien este hacer esto.
 
-*Para ver si se llega a agregar:
+*PARA AGREGAR (SI ES QUE SE LLEGA):
 1) Opcion del admin de reiniciar la tabla de puntajes
 
 

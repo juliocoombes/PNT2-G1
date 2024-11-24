@@ -4,16 +4,20 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useUser } from './UserContext';
 
+
 export default function GameScreen() {
     const { user, setUser } = useUser();
     const router = useRouter();
     const [preguntas, setPreguntas] = useState([]);
+    const [cargando, setCargando] = useState(true) // para manejar la transicion entre que das a jugar y se muestren las preguntas. Se soluciona el error de juego terminado que aparecia antes.
     const [indicePregunta, setIndicePregunta] = useState(0);
     const [puntos, setPuntos] = useState(0);
     const [respuestaCorrecta, setRespuestaCorrecta] = useState('');
+    const [respondioPregunta, setRespondioPregunta] = useState(false);
 
     const apiPreguntas = 'https://67184566b910c6a6e02b8291.mockapi.io/preguntas/Preguntas';
 
+    //Funca
     useEffect(() => {
         const fetchPreguntas = async () => {
             try {
@@ -21,13 +25,17 @@ export default function GameScreen() {
                 const data = await response.json();
                 const preguntasAleatorias = data.sort(() => Math.random() - 0.5);
                 setPreguntas(preguntasAleatorias);
-            } catch (error) {
+            }   catch (error) {
                 console.error('Error al obtener preguntas:', error);
-            }
+            }   finally {
+                setCargando(false); // Finaliza el estado de carga
+            } 
         };
         fetchPreguntas();
     }, []);
 
+
+    //Revisar
     const actualizarPuntajeMax = async (nuevoMaxPuntaje) => {
         try {
             const response = await fetch(`https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios/${user.id}`, {
@@ -48,6 +56,8 @@ export default function GameScreen() {
         }
     };
 
+
+    //Funca
     const confirmarCancelacion = () => {
         Alert.alert(
             'Cancelar Juego',
@@ -59,52 +69,72 @@ export default function GameScreen() {
             { cancelable: true }
         );
     };
+
+
     const manejarRespuesta = (respuestaSeleccionada) => {
-        const preguntaActual = preguntas[indicePregunta];
-        const esCorrecta = respuestaSeleccionada.es_correcta;
-
-        const mensajeRespuesta = esCorrecta
-            ? 'Correcto!'
-            : 'Incorrecto. La respuesta correcta es: ' +
-            preguntaActual.respuestas.find((r) => r.es_correcta).opcion;
-
-        Alert.alert(
-            mensajeRespuesta,
-            '¿Desea continuar?',
-            [
-                {
-                    text: 'No',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Sí',
-                    onPress: () => {
-                        if (esCorrecta) {
-                            setPuntos((prevPuntos) => prevPuntos + 1);
-                        }
-
-                        if (indicePregunta < preguntas.length - 1) {
-                            setIndicePregunta(indicePregunta + 1);
-                        } else {
-                            const puntajeFinal = puntos + (esCorrecta ? 1 : 0);
-                            if (puntajeFinal > user.max_puntaje) {
-                                actualizarPuntajeMax(puntajeFinal);
-                            }
-                            router.push(`/leaderBoard`);
-                        }
-
-                        setRespuestaCorrecta('');
+        
+            const preguntaActual = preguntas[indicePregunta];
+            const esCorrecta = respuestaSeleccionada.es_correcta;
+    
+            const mensajeRespuesta = esCorrecta ? 'Correcto!' : 'Incorrecto';
+    
+          //  setRespondioPregunta(true); // Marca la pregunta como respondida Para evitar que vuelva a responder
+    
+            Alert.alert(
+                mensajeRespuesta,
+                '¿Desea continuar?',
+                [
+                    {
+                        text: 'No',
+                        style: 'cancel',
+                        onPress: () => {
+                            // Muestra un mensaje antes de redirigir al menú principal
+                            Alert.alert(
+                                'Volviendo al menú principal', // Título del mensaje
+                                'Espere un momento...', // Cuerpo del mensaje
+                                [
+                                    {
+                                        text: 'Aceptar',
+                                        onPress: () => router.push('/menu'), // Redirige al menú después de aceptar
+                                    },
+                                ],
+                                { cancelable: false } // Evita que se cierre sin interacción
+                            );
+                        },       
                     },
-                },
-            ],
-            { cancelable: true }
-        );
+                    
+                    {
+                        text: 'Sí',
+                        onPress: () => {
+                            const nuevoPuntaje = puntos + (esCorrecta ? 1 : 0);
+    
+                            if (indicePregunta < preguntas.length - 1) {
+                                setPuntos(nuevoPuntaje);
+                                setIndicePregunta((prevIndice) => prevIndice + 1);
+                            //    setRespondioPregunta(false); // Habilita para la siguiente pregunta.
+                            } else {
+                                if (nuevoPuntaje > user.max_puntaje) {
+                                    actualizarPuntajeMax(nuevoPuntaje);
+                                }
+                                router.push(`/leaderBoard`);
+                            }
+    
+                            setRespuestaCorrecta('');
+                        },
+                    },
+                ],
+                { cancelable: true }
+            );
+        
     };
+    
 
 
     return (
         <View style={styles.container}>
-            {preguntas.length > 0 && indicePregunta < preguntas.length ? (
+            {cargando ? (
+                <Text style={styles.finalizado}>Cargando preguntas...</Text>
+            ) : preguntas.length > 0 && indicePregunta < preguntas.length ? (
                 <>
                     <Text style={styles.pregunta}>{preguntas[indicePregunta]?.pregunta}</Text>
                     <Text style={styles.puntos}>Puntos: {puntos}</Text>
@@ -130,7 +160,10 @@ export default function GameScreen() {
             </View>
         </View>
     );
+    
 }
+
+
 
 const styles = StyleSheet.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1F1F1F' },
