@@ -52,7 +52,7 @@ export default function ListarPreguntasAdmin() {
     };
 
     const irMenu = () => {
-        router.push('/menu'); // Navegar a la ruta /menu
+        router.push('/menu');
     };
 
     const renderItem = ({ item }) => (
