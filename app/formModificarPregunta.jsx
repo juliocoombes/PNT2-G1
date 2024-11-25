@@ -103,6 +103,7 @@ export default function ModificarPreguntaAdmin() {
                 value={respuesta4}
                 onChangeText={setRespuesta4}
             />
+            <Text style={styles.title}>Posición de la respuesta correcta:</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Respuesta Correcta (1-4)"
