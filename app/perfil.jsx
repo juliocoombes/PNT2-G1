@@ -10,7 +10,7 @@ export default function Perfil() {
 
   const [nombre, setNombre] = useState(user?.nombre || '');
   const [apellido, setApellido] = useState(user?.apellido || '');
-  const [username, setUsername] = useState(user?.username || '');
+  const [username, setUsername] = useState(user?.usuario || '');
   const [email, setEmail] = useState(user?.email || '');
   const [password, setPassword] = useState(user?.password || '');
 
@@ -20,7 +20,7 @@ export default function Perfil() {
       ...user,
       nombre,
       apellido,
-      username,
+      usuario,
       email,
       password
     };
@@ -34,7 +34,7 @@ export default function Perfil() {
         body: JSON.stringify({
           nombre: updatedUser.nombre,
           apellido: updatedUser.apellido,
-          username: updatedUser.username,
+          username: updatedUser.usuario,
           email: updatedUser.email,
           password: updatedUser.password
         }),

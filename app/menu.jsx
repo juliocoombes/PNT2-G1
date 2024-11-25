@@ -12,7 +12,7 @@ export default function Menu() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Bienvenido, {user?.username}</Text>
+            <Text style={styles.title}>Bienvenido, {user?.usuario}</Text>
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.button} onPress={(user) => router.push('/juego')}>
