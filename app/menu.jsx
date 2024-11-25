@@ -37,7 +37,7 @@ export default function Menu() {
 
             {user?.user_categoria === "admin" && (
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.adminButton} onPress={() => router.push('/gestionarPreguntasAdmin')}>
+                    <TouchableOpacity style={styles.adminButton} onPress={() => router.push('/crearPreguntasAdmin')}>
                     <Icon name="server" size={25} color="white" style={styles.icon} />
                         <Text style={styles.adminButtonText}>Gestionar preguntas</Text>
                     </TouchableOpacity>

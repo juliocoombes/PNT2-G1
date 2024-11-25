@@ -35,11 +35,12 @@ export default function Leaderboard() {
                     data={puntajes}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item, index }) => (
-                        <View style={styles.scoreContainer}>
+                       
+                        <TouchableOpacity style={styles.scoreContainer}  onPress={() => router.push(`/perfilLeaderboard?id=${item.id}`)}>
                             <Text style={styles.position}>{index + 1}.</Text>
                             <Text style={styles.username}>{item.usuario}</Text>
                             <Text style={styles.maxScore}>{item.max_puntaje}</Text>
-                        </View>
+                        </TouchableOpacity>
                     )}
                     contentContainerStyle={styles.listContainer}
                 />

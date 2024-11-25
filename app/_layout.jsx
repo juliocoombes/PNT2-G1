@@ -14,6 +14,7 @@ export default function RootLayout() {
                 <Stack.Screen name="menu" options={{ headerShown: false }} />
                 <Stack.Screen name="estadisticas" options={{ headerShown: false }} />
                 <Stack.Screen name="perfil" options={{ headerShown: false }} />
+                <Stack.Screen name="perfilLeaderboard" options={{ headerShown: false }} />
                 <Stack.Screen name="crearPreguntasAdmin" options={{ headerShown: false }} />
                 <Stack.Screen name="modificarEliminarPreguntasAdmin" options={{ headerShown: false }} />
                 <Stack.Screen name="leaderBoard" options={{ headerShown: false }} />

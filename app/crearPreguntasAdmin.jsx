@@ -1,5 +1,7 @@
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
+import { useUser } from './UserContext';
 
 export default function CrearPreguntasAdmin() {
     const [pregunta, setPregunta] = useState('');
@@ -7,7 +9,9 @@ export default function CrearPreguntasAdmin() {
     const [respuesta2, setRespuesta2] = useState('');
     const [respuesta3, setRespuesta3] = useState('');
     const [respuesta4, setRespuesta4] = useState('');
-    const [correcta, setCorrecta] = useState(""); // aquí guardo el número de la respuesta correcta
+    const [correcta, setCorrecta] = useState('');
+    const router = useRouter();
+    const { setpreguntaElegida } = useUser();
 
     const apiCrearPregunta = 'https://67184566b910c6a6e02b8291.mockapi.io/preguntas/Preguntas';
 
@@ -31,19 +35,17 @@ export default function CrearPreguntasAdmin() {
                     },
                     body: JSON.stringify(nuevaPregunta),
                 });
-            
+
                 if (!response.ok) {
                     alert('Error al crear la pregunta.');
                 } else {
-                    // Si se creó la pregunta se muestran las opciones
                     Alert.alert(
-                        'Pregunta creada exitosamente', // Título del alert
-                        '¿Qué te gustaría hacer ahora?', // Mensaje del alert
+                        'Pregunta creada exitosamente',
+                        '¿Qué te gustaría hacer ahora?',
                         [
                             {
                                 text: 'Crear otra pregunta',
                                 onPress: () => {
-                                    // Limpiar campos para crear otra pregunta
                                     setPregunta('');
                                     setRespuesta1('');
                                     setRespuesta2('');
@@ -52,10 +54,10 @@ export default function CrearPreguntasAdmin() {
                                     setCorrecta('');
                                 },
                             },
-
                             {
                                 text: 'Ir al Menú Principal',
-                                onPress: () => {                                    
+                                onPress: () => {
+                                    setpreguntaElegida(null);
                                     router.push('/menu');
                                 },
                             },
@@ -64,19 +66,15 @@ export default function CrearPreguntasAdmin() {
                     );
                 }
             } catch (error) {
-                alert('No se pudo crear la pregunta, intenta nuevamente.')
+                alert('No se pudo crear la pregunta, intenta nuevamente.');
             }
-            
+        } else {
+            alert('Todos los campos son obligatorios.');
+        }
     };
 
-
-    }
-
     return (
-        <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
                 <Text style={styles.title}>Crear Nueva Pregunta</Text>
 
@@ -141,81 +139,49 @@ export default function CrearPreguntasAdmin() {
                     }}
                 />
 
-                <Button title="Crear Pregunta" onPress={crearPregunta} />
+                <View style={styles.buttonContainer}>
+                    <Button title="Crear Pregunta" onPress={crearPregunta} />
+                    <Button title="Modificar preguntas" onPress={() => router.push('/modificarEliminarPreguntasAdmin')} />
+                </View>
             </View>
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-
     container: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 20,
-      backgroundColor: 'black', // Fondo oscuro moderno
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+        backgroundColor: 'black',
     },
-  
     input: {
-      height: 50,
-      borderColor: 'white', // Borde gris oscuro para integrarse bien con el fondo negro
-      borderWidth: 1.5, // Borde ligeramente más grueso para resaltar
-      marginBottom: 20,
-      paddingHorizontal: 15,
-      borderRadius: 15, // Bordes redondeados para un diseño moderno
-      backgroundColor: 'white', // Fondo del input más claro que el fondo general
-      color: 'black', // Texto negro para alto contraste
-      fontSize: 16, // Tamaño de texto adecuado para legibilidad
-      placeholderTextColor: '#888', // Placeholder gris claro para diferenciarlo del texto
+        height: 50,
+        borderColor: 'white',
+        borderWidth: 1.5,
+        marginBottom: 20,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        backgroundColor: 'white',
+        color: 'black',
+        fontSize: 16,
     },
-  
     title: {
-      fontSize: 26,
-      fontWeight: '700',
-      color: '#ffffff', // Blanco puro para resaltar
-      marginBottom: 20,
-      textAlign: 'center',
+        fontSize: 26,
+        fontWeight: '700',
+        color: '#ffffff',
+        marginBottom: 20,
+        textAlign: 'center',
     },
-  
     label: {
-      fontSize: 18, // Tamaño más grande para destacar
-      fontWeight: '600', // Negrita moderada para resaltar
-      color: '#FFF', // Blanco puro para contraste con fondo negro
-      marginBottom: 8, // Espacio entre el texto y el input
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#FFF',
+        marginBottom: 8,
     },
-  
-    register: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: 15,
+    buttonContainer: {
+        marginTop: 20, 
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
-  
-    switchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginVertical: 20,
-    },
-  
-    switchText: {
-      fontSize: 16,
-      color: '#1E90FF', // Azul vibrante para destacar sobre el fondo oscuro
-      fontWeight: '600',
-      textAlign: 'center',
-      marginRight: 10,
-    },
-  
-    button: {
-      backgroundColor: '#1E90FF', // Botón azul vibrante
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      borderRadius: 10,
-      alignItems: 'center',
-    },
-  
-    buttonText: {
-      color: '#ffffff', // Texto blanco para buen contraste
-      fontSize: 16,
-      fontWeight: '600',
-    },
-})
+});
