@@ -35,7 +35,7 @@ export default function GameScreen() {
     }, []);
 
 
-    //Revisar
+    //Funca
     const actualizarPuntajeMax = async (nuevoMaxPuntaje) => {
         try {
             const response = await fetch(`https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios/${user.id}`, {
@@ -78,8 +78,6 @@ export default function GameScreen() {
     
             const mensajeRespuesta = esCorrecta ? 'Correcto!' : 'Incorrecto';
     
-          //  setRespondioPregunta(true); // Marca la pregunta como respondida Para evitar que vuelva a responder
-    
             Alert.alert(
                 mensajeRespuesta,
                 '¿Desea continuar?',
@@ -88,14 +86,14 @@ export default function GameScreen() {
                         text: 'No',
                         style: 'cancel',
                         onPress: () => {
-                            // Muestra un mensaje antes de redirigir al menú principal
+                            
                             Alert.alert(
-                                'Volviendo al menú principal', // Título del mensaje
-                                'Espere un momento...', // Cuerpo del mensaje
+                                'Volviendo al menú principal', 
+                                'Espere un momento...', 
                                 [
                                     {
                                         text: 'Aceptar',
-                                        onPress: () => router.push('/menu'), // Redirige al menú después de aceptar
+                                        onPress: () => router.push('/menu'), 
                                     },
                                 ],
                                 { cancelable: false } // Evita que se cierre sin interacción
@@ -111,7 +109,6 @@ export default function GameScreen() {
                             if (indicePregunta < preguntas.length - 1) {
                                 setPuntos(nuevoPuntaje);
                                 setIndicePregunta((prevIndice) => prevIndice + 1);
-                            //    setRespondioPregunta(false); // Habilita para la siguiente pregunta.
                             } else {
                                 if (nuevoPuntaje > user.max_puntaje) {
                                     actualizarPuntajeMax(nuevoPuntaje);

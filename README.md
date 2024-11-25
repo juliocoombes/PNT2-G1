@@ -12,10 +12,6 @@
 --------------------------------------
 
 PARA CORREGIR:
-
-2) Al finalizar el juego, en el achivo 'leadeBoard' poner un botón para jugar de nuevo o redirigir al menú.
-
-4) en la vista intermedia, en el 'menú', agregar un boton para listar las preguntas y modificarlas (solo admins).
    
 6) Tratar de implementar un login con Google
 

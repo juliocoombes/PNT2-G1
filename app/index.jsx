@@ -14,7 +14,7 @@ export default function Login() {
   const [esLogin, setEsLogin] = useState(true)
   const [usuario, setUsuario] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [contraseña, setPassword] = useState('');
 
   const { setUser } = useUser();
   const router = useRouter();
@@ -30,12 +30,12 @@ export default function Login() {
   //Funciona bien
   const handleLogin = async () => {
     console.log('Usuario: ', usuario);
-    console.log('Password: ', password);
+    console.log('Contraseña: ', contraseña);
     try {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
       const data = await response.json();
 
-      const user = data.find(u => (u.username == usuario || u.email == usuario) && u.password == password);
+      const user = data.find(u => (u.usuario == usuario || u.email == usuario) && u.contraseña == contraseña);
 
       if (user) {
         setUser(user);
@@ -53,13 +53,14 @@ export default function Login() {
   //Funciona bien
   const handleRegister = async () => {
     console.log('Usuario: ', usuario);
-    console.log('Password: ', password);
+    console.log('Contraseña: ', contraseña);
     console.log('Mail: ', email);
   
     try {
-      if (usuario && password && email && esEmailValido(email)) {
+      if (usuario && contraseña && email && esEmailValido(email)) {
         const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
         const data = await response.json();
+        console.log(data);
   
         const userExist = data.some(u => u.username === usuario);
         const emailExist = data.some(u => u.email === email);
@@ -68,7 +69,7 @@ export default function Login() {
           const body = JSON.stringify({
             username: usuario,
             email: email,
-            password: password,
+            password: contraseña,
           });
   
           const createResponse = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
@@ -97,7 +98,7 @@ export default function Login() {
         }
       } else {
         Alert.alert(
-          !usuario || !password || !email
+          !usuario || !contraseña || !email
             ? 'Por favor, complete todos los campos.'
             : 'Por favor, ingresa un email válido.'
         );
@@ -110,36 +111,35 @@ export default function Login() {
   
 
 
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{esLogin ? 'Login' : 'Register'}</Text>
-      <Text>Usuario:</Text>
+      <Text style={styles.label}>Usuario:</Text>
       <TextInput
         style={styles.input}
-        placeholder='Ingrese su Usuario'
+        placeholder='Ingrese su usuario'
         value={usuario}
         onChangeText={setUsuario}
       />
       {
         !esLogin && (
           <>
-            <Text>Email:</Text>
+            <Text style={styles.label}>Email:</Text>
             <TextInput
               style={styles.input}
-              placeholder='Ingrese su Email'
+              placeholder='Ingrese su email'
               value={email}
               onChangeText={setEmail}
             />
           </>
         )
       }
-      <Text>Password:</Text>
+      <Text style={styles.label}>Contraseña:</Text>
       <TextInput
         secureTextEntry={true}
         style={styles.input}
-        placeholder='Ingrese su password'
-        value={password}
+        placeholder='Ingrese su contraseña'
+        value={contraseña}
         onChangeText={setPassword}
       />
       <View style={styles.register}>
@@ -154,8 +154,8 @@ export default function Login() {
             )
         }
       </View>
-      <View>
-        <Text>{esLogin ? "Cambia a Registro" : 'Cambia a Login'}</Text>
+      <View style = {styles.switchContainer}>
+        <Text style = {styles.switchText}>{esLogin ? "Cambiar a Registro" : 'Cambiar a Login'}</Text>
         <Switch value={esLogin} onValueChange={setEsLogin} />
       </View>
     </View>
@@ -163,28 +163,75 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: 'black', // Fondo oscuro moderno
   },
+
   input: {
-    height: 40,
-    borderColor: 'grey',
-    borderWidth: 1,
+    height: 50,
+    borderColor: 'white', // Borde gris oscuro para integrarse bien con el fondo negro
+    borderWidth: 1.5, // Borde ligeramente más grueso para resaltar
     marginBottom: 20,
-    paddingHorizontal: 10,
-    borderRadius: 10
+    paddingHorizontal: 15,
+    borderRadius: 15, // Bordes redondeados para un diseño moderno
+    backgroundColor: 'white', // Fondo del input más claro que el fondo general
+    color: 'black', // Texto blanco para alto contraste
+    fontSize: 16, // Tamaño de texto adecuado para legibilidad
+    placeholderTextColor: '#888', // Placeholder gris claro para diferenciarlo del texto
   },
+
   title: {
-    fontSize: 24,
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#ffffff', // Blanco puro para resaltar
     marginBottom: 20,
-    textAlign: 'center'
+    textAlign: 'center',
   },
+
   register: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 20,
-  }
+    marginTop: 15,
+  },
+
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
+  },
+
+  switchText: {
+    fontSize: 16,
+    color: '#1E90FF', // Azul vibrante para destacar sobre el fondo oscuro
+    fontWeight: '600',
+    textAlign: 'center',
+    marginRight: 10,
+  },
+
+  button: {
+    backgroundColor: '#1E90FF', // Botón azul vibrante
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  buttonText: {
+    color: '#ffffff', // Texto blanco para buen contraste
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  label: {
+    fontSize: 18, // Tamaño más grande para destacar
+    fontWeight: '600', // Negrita moderada para resaltar
+    color: '#FFF', // Blanco puro para contraste con fondo negro
+    marginBottom: 8, // Espacio entre el texto y el input
+  },
 });
+
+

@@ -56,74 +56,86 @@ export default function Perfil() {
     <View style={styles.view}>
       {user ? (
         <>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Nombre"
-
-            value={nombre}
-            onChangeText={setNombre}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Apellido"
-
-            value={apellido}
-            onChangeText={setApellido}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Username"
-
-            value={username}
-            onChangeText={setUsername}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.textInput}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={true}
-          />
-
+          <View style={styles.field}>
+            <Text style={styles.label}>Nombre:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Nombre"
+              value={nombre}
+              onChangeText={setNombre}
+            />
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Apellido:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Apellido"
+              value={apellido}
+              onChangeText={setApellido}
+            />
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Username:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Email:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Password:</Text>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+            />
+          </View>
 
           <Button title="Actualizar" onPress={handleUpdate} />
         </>
       ) : (
-        <Text>Cargando datos de usuario...</Text>
+        <Text style={styles.loadingText}>Cargando datos de usuario...</Text>
       )}
     </View>
   );
 }
 
-
 const styles = StyleSheet.create({
   view: {
     flex: 1,
     backgroundColor: 'black',
-    padding: 20,
+    padding: 30,
+  },
+  field: {
+    marginBottom: 20, // Espaciado entre cada campo
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 5, // Espaciado entre el label y el input
   },
   textInput: {
     backgroundColor: '#fff',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
     color: 'black',
   },
-  button: {
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-    padding: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  loadingText: {
+    color: '#ffffff',
     textAlign: 'center',
+    fontSize: 16,
   },
 });
-

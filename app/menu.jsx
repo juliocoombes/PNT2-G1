@@ -6,18 +6,9 @@ import { useUser } from './UserContext';
 
  //ahora si funciona el cerrar sesion. Como estaba con el handlelogut no funciona y se crashea.
 
- // onPress={handleLogout}> asi estaba antes el logOut.. pero no funcionaba
-
-// asi si funciona --> onPress={() => router.push('/')}>
-
 export default function Menu() {
     const router = useRouter();
     const { user, logout } = useUser();
-
-    // const handleLogout = () => {
-    //     logout();
-    //     router.push('/');
-    // };
 
     return (
         <View style={styles.container}>
