@@ -13,8 +13,11 @@ export default function Login() {
 
   const [esLogin, setEsLogin] = useState(true)
   const [usuario, setUsuario] = useState('');
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
   const [contraseña, setcontraseña] = useState('');
+  const [confirmarContraseña, setConfirmarContraseña] = useState('');
 
   const { setUser } = useUser();
   const router = useRouter();
@@ -57,7 +60,11 @@ export default function Login() {
     console.log('Mail: ', email);
   
     try {
-      if (usuario && contraseña && email && esEmailValido(email)) {
+      if (usuario && contraseña && email && esEmailValido(email)&& nombre && apellido) {
+        if (contraseña !== confirmarContraseña) {
+          Alert.alert('Las contraseñas no coinciden.');
+          return;
+        }
         const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
         const data = await response.json();
         console.log(data);
@@ -68,6 +75,8 @@ export default function Login() {
         if (!userExist && !emailExist) {
           const body = JSON.stringify({
             username: usuario,
+            nombre:nombre,
+            apellido : apellido,
             email: email,
             password: contraseña,
           });
@@ -86,6 +95,8 @@ export default function Login() {
             const loggedUser = {
               id: nuevoUsuario.id,
               username: nuevoUsuario.username,
+              apellido: nuevoUsuario.apellido,
+              nombre: nuevoUsuario.nombre,
               email: nuevoUsuario.email,
             };
             setUser(loggedUser);
@@ -98,7 +109,7 @@ export default function Login() {
         }
       } else {
         Alert.alert(
-          !usuario || !contraseña || !email
+          !usuario || !contraseña || !email || !nombre || !apellido
             ? 'Por favor, complete todos los campos.'
             : 'Por favor, ingresa un email válido.'
         );
@@ -124,6 +135,20 @@ export default function Login() {
       {
         !esLogin && (
           <>
+          <Text style={styles.label}>Nombre:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Ingrese su nombre'
+            value={nombre}
+            onChangeText={setNombre}
+          />
+          <Text style={styles.label}>Apellido:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder='Ingrese su apellido'
+            value={apellido}
+            onChangeText={setApellido}
+          />
             <Text style={styles.label}>Email:</Text>
             <TextInput
               style={styles.input}
@@ -142,6 +167,20 @@ export default function Login() {
         value={contraseña}
         onChangeText={setcontraseña}
       />
+      {
+      !esLogin && (
+        <>
+          <Text style={styles.label}>Confirmar Contraseña:</Text>
+          <TextInput
+            secureTextEntry={true}
+            style={styles.input}
+            placeholder='Confirme su contraseña'
+            value={confirmarContraseña}
+            onChangeText={setConfirmarContraseña}
+          />
+        </>
+      )
+    }
       <View style={styles.register}>
         {
           esLogin ?
