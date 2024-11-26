@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, TextInput, Button, Switch, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, Switch, Alert, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useUser } from './UserContext';
@@ -123,6 +123,7 @@ export default function Login() {
 
 
   return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
     <View style={styles.container}>
       <Text style={styles.title}>{esLogin ? 'Login' : 'Register'}</Text>
       <Text style={styles.label}>Usuario:</Text>
@@ -198,6 +199,7 @@ export default function Login() {
         <Switch value={esLogin} onValueChange={setEsLogin} />
       </View>
     </View>
+    </ScrollView>
   );
 }
 
