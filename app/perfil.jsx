@@ -52,6 +52,25 @@ export default function Perfil() {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios/${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        Alert.alert('¡Eliminado!', 'Tu cuenta ha sido eliminada con éxito.');
+        setUser(null); 
+        router.push('/'); 
+      } else {
+        Alert.alert('Error', 'Error al eliminar la cuenta.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Ocurrió un error inesperado.');
+    }
+  };
+
   return (
     <View style={styles.view}>
       {user ? (
@@ -104,6 +123,18 @@ export default function Perfil() {
           </View>
 
           <Button title="Actualizar" onPress={handleUpdate} />
+          <Button style={styles.deleteButton} onPress={() =>
+              Alert.alert(
+                'Confirmar Eliminación',
+                '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
+                [
+                  { text: 'Cancelar', style: 'cancel' },
+                  { text: 'Eliminar', onPress: handleDelete, style: 'destructive' },
+                ]
+              )
+              
+            }
+       title='Eliminar'/>
         </>
       ) : (
         <Text style={styles.loadingText}>Cargando datos de usuario...</Text>
@@ -137,5 +168,17 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     fontSize: 16,
+  },
+  deleteButton: {
+    marginTop: 50,
+    padding: 10,
+    backgroundColor: 'red',
+    borderRadius: 5,
+    alignItems: 'center',
+    color : "red",
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
