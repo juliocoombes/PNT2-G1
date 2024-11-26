@@ -5,14 +5,15 @@ import { useColorScheme } from 'react-native'
 
 export default function TabLayout(){
 
-    const colorScheme = useColorScheme()
+    const colorScheme = useColorScheme() //hook para detectar el tema del dispositivo (claro/oscuro)
 
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint
+                tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint 
             }}>
+                
             <Tabs.Screen
                 name="index"
                 options={{
@@ -23,6 +24,7 @@ export default function TabLayout(){
                 }}
             />
 
+
             <Tabs.Screen
             name="leaderBoard"
             options={{
@@ -31,7 +33,9 @@ export default function TabLayout(){
                     <Ionicons size={28} name={focused ? 'trophy' : 'trophy-outline'} color={color} />
                 )
             }}
-        />
+            />
+
+
             <Tabs.Screen
             name="juego"
             options={{
@@ -40,7 +44,7 @@ export default function TabLayout(){
                     <Ionicons size={28} name={focused ? 'game-controller' : 'game-controller-outline'} color={color} />
                 )
             }}
-        />
+            />
 
         </Tabs>
     )

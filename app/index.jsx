@@ -14,7 +14,7 @@ export default function Login() {
   const [esLogin, setEsLogin] = useState(true)
   const [usuario, setUsuario] = useState('');
   const [email, setEmail] = useState('');
-  const [contraseña, setPassword] = useState('');
+  const [contraseña, setcontraseña] = useState('');
 
   const { setUser } = useUser();
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function Login() {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
       const data = await response.json();
 
-      const user = data.find(u => (u.username == usuario || u.email == email) && u.password === contraseña);
+      const user = data.find(u => (u.usuario == usuario || u.email == email) && u.contraseña === contraseña);
 
       if (user) {
         setUser(user);
@@ -62,14 +62,14 @@ export default function Login() {
         const data = await response.json();
         console.log(data);
   
-        const userExist = data.some(u => u.username === usuario);
+        const userExist = data.some(u => u.usuario === usuario);
         const emailExist = data.some(u => u.email === email);
   
         if (!userExist && !emailExist) {
           const body = JSON.stringify({
-            username: usuario,
+            usuario: usuario,
             email: email,
-            password: contraseña,
+            contraseña: contraseña,
           });
   
           const createResponse = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
@@ -85,7 +85,7 @@ export default function Login() {
             const nuevoUsuario = await createResponse.json();
             const loggedUser = {
               id: nuevoUsuario.id,
-              username: nuevoUsuario.username,
+              usuario: nuevoUsuario.usuario,
               email: nuevoUsuario.email,
             };
             setUser(loggedUser);
@@ -94,7 +94,7 @@ export default function Login() {
             Alert.alert('Error al registrar el usuario.');
           }
         } else {
-          Alert.alert(userExist ? 'El username ya está en uso.' : 'El Email ya está registrado.');
+          Alert.alert(userExist ? 'El usuario ya está en uso.' : 'El Email ya está registrado.');
         }
       } else {
         Alert.alert(
@@ -140,7 +140,7 @@ export default function Login() {
         style={styles.input}
         placeholder='Ingrese su contraseña'
         value={contraseña}
-        onChangeText={setPassword}
+        onChangeText={setcontraseña}
       />
       <View style={styles.register}>
         {
