@@ -139,6 +139,9 @@ export default function Perfil() {
       ) : (
         <Text style={styles.loadingText}>Cargando datos de usuario...</Text>
       )}
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/menu')}>
+                <Text style={styles.buttonText}>Volver al Menú</Text>
+            </TouchableOpacity>
     </View>
   );
 }
@@ -181,4 +184,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  button: {
+    marginTop: 20,
+    backgroundColor: '#FFD700',  // Color dorado
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25, // Borde redondeado
+    alignItems: 'center', // Centra el texto
+    justifyContent: 'center',
+    width: '70%', // Ancho del botón
+    marginBottom: 20, // Espacio debajo
+    elevation: 5, // Sombra ligera para Android
+},
 });

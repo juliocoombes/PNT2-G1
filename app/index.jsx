@@ -35,7 +35,7 @@ export default function Login() {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
       const data = await response.json();
 
-      const user = data.find(u => (u.usuario == usuario || u.email == usuario) && u.contraseña == contraseña);
+      const user = data.find(u => (u.username == usuario || u.email == email) && u.password === contraseña);
 
       if (user) {
         setUser(user);

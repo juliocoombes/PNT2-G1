@@ -38,7 +38,7 @@ export default function Leaderboard() {
                        
                         <TouchableOpacity style={styles.scoreContainer}  onPress={() => router.push(`/perfilLeaderboard?id=${item.id}`)}>
                             <Text style={styles.position}>{index + 1}.</Text>
-                            <Text style={styles.username}>{item.usuario}</Text>
+                            <Text style={styles.username}>{item.username}</Text>
                             <Text style={styles.maxScore}>{item.max_puntaje}</Text>
                         </TouchableOpacity>
                     )}
