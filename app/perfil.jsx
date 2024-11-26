@@ -121,79 +121,91 @@ export default function Perfil() {
               secureTextEntry={true}
             />
           </View>
-
-          <Button title="Actualizar" onPress={handleUpdate} />
-          <Button style={styles.deleteButton} onPress={() =>
-              Alert.alert(
-                'Confirmar Eliminación',
-                '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
-                [
-                  { text: 'Cancelar', style: 'cancel' },
-                  { text: 'Eliminar', onPress: handleDelete, style: 'destructive' },
-                ]
-              )
-              
-            }
-       title='Eliminar'/>
+  
+          <View style={styles.buttonsContainer}>
+            <Button title="Actualizar" onPress={handleUpdate} />
+          </View>
+          <View style={styles.buttonsContainer}>
+            <Button
+              style={styles.deleteButton}
+              onPress={() =>
+                Alert.alert(
+                  'Confirmar Eliminación',
+                  '¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.',
+                  [
+                    { text: 'Cancelar', style: 'cancel' },
+                    { text: 'Eliminar', onPress: handleDelete, style: 'destructive' },
+                  ]
+                )
+              }
+              title="Eliminar"
+            />
+          </View>
         </>
       ) : (
         <Text style={styles.loadingText}>Cargando datos de usuario...</Text>
       )}
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/menu')}>
-                <Text style={styles.buttonText}>Volver al Menú</Text>
-            </TouchableOpacity>
+  
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/menu')}>
+          <Text style={styles.buttonText}>Volver al Menú</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    backgroundColor: 'black',
-    padding: 30,
-  },
-  field: {
-    marginBottom: 20, // Espaciado entre cada campo
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 5, // Espaciado entre el label y el input
-  },
-  textInput: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 10,
-    color: 'black',
-  },
-  loadingText: {
-    color: '#ffffff',
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  deleteButton: {
-    marginTop: 50,
-    padding: 10,
-    backgroundColor: 'red',
-    borderRadius: 5,
-    alignItems: 'center',
-    color : "red",
-  },
-  deleteButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  button: {
-    marginTop: 20,
-    backgroundColor: '#FFD700',  // Color dorado
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 25, // Borde redondeado
-    alignItems: 'center', // Centra el texto
-    justifyContent: 'center',
-    width: '70%', // Ancho del botón
-    marginBottom: 20, // Espacio debajo
-    elevation: 5, // Sombra ligera para Android
-},
-});
+
+  const styles = StyleSheet.create({
+    view: {
+      flex: 1,
+      backgroundColor: 'black',
+      padding: 30,
+      justifyContent: 'space-around', // Asegura que los botones estén distribuidos verticalmente
+    },
+    field: {
+      marginBottom: 20, 
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#ffffff',
+      marginBottom: 5, 
+    },
+    textInput: {
+      backgroundColor: '#fff',
+      borderRadius: 5,
+      padding: 10,
+      color: 'black',
+    },
+    loadingText: {
+      color: '#ffffff',
+      textAlign: 'center',
+      fontSize: 16,
+    },
+    deleteButton: {
+      backgroundColor: 'red',
+      borderRadius: 25,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '70%',
+      marginBottom: 20, 
+    },
+    button: {
+      backgroundColor: '#FFD700', 
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 25, 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      width: '70%', 
+      marginBottom: 20, 
+    },
+    buttonsContainer: {
+      alignItems: 'center', // Centra los botones
+      marginBottom: 20, // Aumentar el espacio entre los botones
+    },
+  });
+  

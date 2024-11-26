@@ -67,14 +67,17 @@ export default function ListarPreguntasAdmin() {
 
     return (
         <View style={styles.container}>
+        <View style={styles.listContainer}>
             <FlatList
                 data={preguntas}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
                 ListEmptyComponent={<Text style={styles.empty}>No hay preguntas disponibles.</Text>}
             />
-            <Button title="Ir al Menú" onPress={irMenu} style={styles.menuButton} />
         </View>
+
+        <Button title="Ir al Menú" onPress={irMenu} style={styles.menuButton} />
+    </View>
     );
 }
 
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     menuButton: {
-        marginTop: 30, 
+        marginTop: 5, 
         width: '100%',
     },
 });

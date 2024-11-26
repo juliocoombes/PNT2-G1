@@ -1,19 +1,15 @@
-*PARA CORREGIR:
-1) Pensar si esta bien que el usuario se admin o no por defecto ya que no lo validamos en ningun lado, es un atributo que asignamos desde la api y no se que tan bien este hacer esto.
+Bienvenido a nuestro proyecto final de "Programacion en nuevas tecnologias 2"
 
-*PARA AGREGAR (SI ES QUE SE LLEGA):
-1) Opcion del admin de reiniciar la tabla de puntajes
+Nuestro proyecto es una aplicacion para celular que es un juego, una trivia de preguntas sobre programacion.
 
+Se tiene la posibilidad de registrarse antes de iniciar y una vez realizado ya puede jugar.
 
+**
+Esto fue desarrollado utilizando expo
 
+Para iniciar debe ejecutar el comando "npm start" en la terminal de vs code. 
+Cabe aclarar que utilizamos la version 51 de Expo Go por lo tanto si al descargar la app tiene otra version, tendra que primero descargarse la version anteriormente mencionada. Para ello puede seguir los pasos que da la misma aplicacion (o sino en el siguiente link https://expo.dev/go?sdkVersion=51&platform=android&device=true)
 
-
-
---------------------------------------
-
-PARA CORREGIR:
-   
-6) Tratar de implementar un login con Google
 
 instalada libreria de fontAwesome, link para ver los iconos:
 
