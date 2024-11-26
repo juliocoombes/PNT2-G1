@@ -35,7 +35,7 @@ export default function Login() {
       const response = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios');
       const data = await response.json();
 
-      const user = data.find(u => (u.usuario == usuario || u.email == email) && u.contraseña === contraseña);
+      const user = data.find(u => (u.username  == usuario || u.email == email) && u.password === contraseña);
 
       if (user) {
         setUser(user);
@@ -62,14 +62,14 @@ export default function Login() {
         const data = await response.json();
         console.log(data);
   
-        const userExist = data.some(u => u.usuario === usuario);
+        const userExist = data.some(u => u.username === usuario);
         const emailExist = data.some(u => u.email === email);
   
         if (!userExist && !emailExist) {
           const body = JSON.stringify({
-            usuario: usuario,
+            username: usuario,
             email: email,
-            contraseña: contraseña,
+            password: contraseña,
           });
   
           const createResponse = await fetch('https://6718400fb910c6a6e02b761e.mockapi.io/usuarios/Usuarios', {
@@ -85,7 +85,7 @@ export default function Login() {
             const nuevoUsuario = await createResponse.json();
             const loggedUser = {
               id: nuevoUsuario.id,
-              usuario: nuevoUsuario.usuario,
+              username: nuevoUsuario.username,
               email: nuevoUsuario.email,
             };
             setUser(loggedUser);
